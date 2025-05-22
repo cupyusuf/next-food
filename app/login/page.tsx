@@ -5,8 +5,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignInAlt } from '@fortawesome/free-solid-svg-icons';
 import { loginUser } from '../../services/api';
 import { useRouter } from 'next/navigation';
-import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Swal from 'sweetalert2';
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -17,13 +17,38 @@ const LoginPage: React.FC = () => {
     e.preventDefault();
     try {
       const response = await loginUser({ email, password });
-      localStorage.setItem('access_token', response.access_token);
-      localStorage.setItem('user', JSON.stringify(response.user));
-      toast.success('Login Successful!', { autoClose: 2000 }); // Show toast notification
-      router.push('/dashboard'); // Redirect to dashboard after login
+      console.log('Login response:', response);
+      if (response.access_token && response.user) {
+        localStorage.setItem('access_token', response.access_token);
+        localStorage.setItem('user', JSON.stringify(response.user));
+        await Swal.fire({
+          icon: 'success',
+          title: 'Login Successful!',
+          showConfirmButton: false,
+          timer: 2000
+        });
+        router.push('/dashboard');
+      } else {
+        await Swal.fire({
+          icon: 'error',
+          title: 'Login failed. Invalid response.',
+          showConfirmButton: false,
+          timer: 2000
+        });
+      }
     } catch (error) {
       console.error('Error logging in:', error);
-      toast.error('Login failed. Please check your credentials.', { autoClose: 2000 }); // Show error toast
+      let msg = 'Login failed. Please check your credentials.';
+      const axiosErr = error as { response?: { data?: { message?: string } } };
+      if (axiosErr?.response?.data?.message) {
+        msg = axiosErr.response.data.message;
+      }
+      await Swal.fire({
+        icon: 'error',
+        title: msg,
+        showConfirmButton: false,
+        timer: 2000
+      });
     }
   };
 

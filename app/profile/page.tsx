@@ -2,7 +2,6 @@
 
 import React, { useEffect } from 'react';
 import { updateUserProfile } from '../../services/api';
-import { useRouter } from 'next/navigation';
 import Swal from 'sweetalert2';
 import useUserStore from '../../stores/userStore';
 
@@ -10,10 +9,6 @@ import useUserStore from '../../stores/userStore';
 
 const ProfilePage: React.FC = () => {
   const { name, phone, address, setUser } = useUserStore();
-  const router = useRouter();
-
-  const safePhone = phone || ''; // Default to empty string
-  const safeAddress = address || ''; // Default to empty string
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -25,7 +20,7 @@ const ProfilePage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const updatedUser = { name, phone: safePhone, address: safeAddress };
+      const updatedUser = { name, phone, address }; // Kirim name, phone, address
       const response = await updateUserProfile(updatedUser); // Send updated profile to API
       localStorage.setItem('user', JSON.stringify(response)); // Update localStorage with new user data
       setUser(response); // Update Zustand store
@@ -33,8 +28,8 @@ const ProfilePage: React.FC = () => {
         icon: 'success',
         title: 'Profile Updated',
         text: 'Your profile has been updated successfully.',
-      }).then(() => {
-        router.push('/dashboard'); // Redirect to dashboard
+        showConfirmButton: false,
+        timer: 2000
       });
     } catch (error) {
       console.error('Failed to update profile:', error);
@@ -42,6 +37,8 @@ const ProfilePage: React.FC = () => {
         icon: 'error',
         title: 'Update Failed',
         text: 'Failed to update profile. Please try again.',
+        showConfirmButton: false,
+        timer: 2000
       });
     }
   };
@@ -64,18 +61,19 @@ const ProfilePage: React.FC = () => {
             <label className="block text-gray-300">Phone:</label>
             <input
               type="text"
-              value={safePhone}
+              value={phone || ''}
               onChange={(e) => setUser({ ...useUserStore.getState(), phone: e.target.value })}
               className="w-full px-4 py-2 border border-gray-700 rounded-lg bg-gray-700 text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
           <div>
             <label className="block text-gray-300">Address:</label>
-            <textarea
-              value={safeAddress}
+            <input
+              type="text"
+              value={address || ''}
               onChange={(e) => setUser({ ...useUserStore.getState(), address: e.target.value })}
               className="w-full px-4 py-2 border border-gray-700 rounded-lg bg-gray-700 text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            ></textarea>
+            />
           </div>
           <button
             type="submit"

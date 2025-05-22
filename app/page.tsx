@@ -38,19 +38,19 @@ const HomePage: React.FC = () => {
     <main>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {foods.map((food) => (
-          <div key={food.id} className="border rounded-lg shadow-md p-4 max-w-xs">
+          <div key={food.id} className="border border-gray-700 bg-gray-800 shadow-md p-4 max-w-xs rounded-lg">
             <Image
               src={food.image_url || '/vercel.svg'}
               alt={food.name}
               width={200}
               height={150}
-              className="rounded-md mb-4"
+              className="rounded-md mb-4 bg-gray-700"
             />
-            <h2 className="text-lg font-semibold mb-2">{food.name}</h2>
-            <p className="text-gray-600 mb-2 truncate">{food.description}</p>
-            <p className="text-md font-bold mb-4">Rp {food.price}</p>
+            <h2 className="text-lg font-semibold mb-2 text-white">{food.name}</h2>
+            <p className="text-gray-400 mb-2 truncate">{food.description}</p>
+            <p className="text-md font-bold mb-4 text-blue-400">Rp {food.price}</p>
             <button
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 w-full"
+              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full transition-colors duration-150"
               onClick={() => handleAddToCart(food)}
             >
               Add to Cart

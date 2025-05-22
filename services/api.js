@@ -81,6 +81,11 @@ export const getOrders = async () => {
 };
 
 export const payOrder = async (orderId) => {
-  const response = await api.post(`/api/orders/${orderId}/pay`);
+  const token = localStorage.getItem('access_token');
+  const response = await api.post(
+    `/api/orders/item/${orderId}/pay`,
+    {},
+    token ? { headers: { Authorization: `Bearer ${token}` } } : {}
+  );
   return response.data;
 };
