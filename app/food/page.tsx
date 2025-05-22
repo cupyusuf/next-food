@@ -1,20 +1,55 @@
 "use client";
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import useFoodStore from '../../stores/foodStore';
 import { useRouter } from 'next/navigation'; // Correct import for Next.js 13+
 import Image from 'next/image';
+import Swal from 'sweetalert2';
 
 const FoodPage: React.FC = () => {
-  const { foods, fetchFoods } = useFoodStore();
+  const { foods, fetchFoods, deleteFood } = useFoodStore();
   const router = useRouter();
+  const [search, setSearch] = React.useState('');
 
-  // Fetch foods when the component is rendered
-  fetchFoods();
+  useEffect(() => {
+    fetchFoods();
+  }, [fetchFoods]);
 
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const searchValue = e.target.value.toLowerCase();
-    return foods.filter((food) => food.name.toLowerCase().includes(searchValue));
+  const filteredFoods = foods.filter((food) =>
+    typeof food.name === 'string' && food.name.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const handleDelete = async (id: number) => {
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: 'This food will be deleted permanently!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it!'
+    });
+    if (result.isConfirmed) {
+      try {
+        await deleteFood(id);
+        await Swal.fire({
+          icon: 'success',
+          title: 'Deleted!',
+          text: 'Food has been deleted.',
+          showConfirmButton: false,
+          timer: 2000
+        });
+        // Tidak perlu fetchFoods, cukup update state lokal
+      } catch {
+        await Swal.fire({
+          icon: 'error',
+          title: 'Error!',
+          text: 'Failed to delete food.',
+          showConfirmButton: false,
+          timer: 2000
+        });
+      }
+    }
   };
 
   return (
@@ -26,7 +61,8 @@ const FoodPage: React.FC = () => {
           <input
             type="text"
             placeholder="Search by name"
-            onChange={handleSearch}
+            value={search}
+            onChange={e => setSearch(e.target.value)}
             className="px-4 py-2 border border-gray-700 rounded-lg bg-gray-800 text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <button
@@ -48,7 +84,7 @@ const FoodPage: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {foods.map((food, index) => (
+            {filteredFoods.map((food, index) => (
               <tr key={food.id || index} className="hover:bg-gray-800">
                 <td className="border border-gray-700 px-4 py-2 text-center">{index + 1}</td>
                 <td className="border border-gray-700 px-4 py-2">{food.name}</td>
@@ -57,9 +93,10 @@ const FoodPage: React.FC = () => {
                   {food.image_url && (
                     <Image
                       src={food.image_url}
-                      alt={food.name}
+                      alt={food.name || 'food'}
                       width={50}
                       height={50}
+                      style={{ width: 'auto', height: 'auto', maxWidth: 50, maxHeight: 50 }}
                       className="rounded-md"
                     />
                   )}
@@ -71,7 +108,10 @@ const FoodPage: React.FC = () => {
                   >
                     Edit
                   </button>
-                  <button className="px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700">
+                  <button
+                    className="px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700"
+                    onClick={() => handleDelete(food.id)}
+                  >
                     Delete
                   </button>
                 </td>

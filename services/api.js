@@ -29,7 +29,13 @@ export const getFoodById = async (id) => {
 };
 
 export const updateFood = async (id, food) => {
-  const response = await api.put(`/api/foods/${id}`, food);
+  // Gunakan FormData dan method override agar sesuai dengan backend Laravel
+  const formData = new FormData();
+  for (const [key, value] of food.entries()) {
+    formData.append(key, value);
+  }
+  formData.append('_method', 'PUT');
+  const response = await api.post(`/api/foods/${id}`, formData);
   return response.data;
 };
 

@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useFoodStore } from "../../../../stores/foodStore";
-import { toast } from "react-toastify";
+import Swal from 'sweetalert2';
 import "react-toastify/dist/ReactToastify.css";
 
 const EditFoodPage: React.FC = () => {
@@ -26,7 +26,12 @@ const EditFoodPage: React.FC = () => {
         setDescription(food.description || "");
       } catch (error) {
         console.error("Failed to fetch food details:", error);
-        toast.error("Failed to load food details. Please try again.", { autoClose: 2000 });
+        Swal.fire({
+          icon: 'error',
+          title: 'Failed to load food details. Please try again.',
+          showConfirmButton: false,
+          timer: 2000
+        });
       }
     };
 
@@ -46,11 +51,21 @@ const EditFoodPage: React.FC = () => {
 
     try {
       await updateFood(foodId, formData);
-      toast.success("Food updated successfully!", { autoClose: 2000 });
+      Swal.fire({
+        icon: 'success',
+        title: 'Food updated successfully!',
+        showConfirmButton: false,
+        timer: 2000
+      });
       router.push("/food");
     } catch (error) {
       console.error("Failed to update food:", error);
-      toast.error("Failed to update food. Please try again.", { autoClose: 2000 });
+      Swal.fire({
+        icon: 'error',
+        title: 'Failed to update food. Please try again.',
+        showConfirmButton: false,
+        timer: 2000
+      });
     }
   };
 

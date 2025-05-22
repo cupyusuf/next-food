@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useFoodStore } from '../../../stores/foodStore';
 import { useRouter } from 'next/navigation';
-import { toast } from 'react-toastify';
+import Swal from 'sweetalert2';
 import 'react-toastify/dist/ReactToastify.css';
 
 const CreateFoodPage: React.FC = () => {
@@ -33,12 +33,22 @@ const CreateFoodPage: React.FC = () => {
       }
       formData.append('description', description);
 
-      await addFood(formData); // Pass FormData to handle file upload
-      toast.success('Food created successfully!', { autoClose: 2000 }); // Show success toast
-      router.push('/food'); // Redirect to food list
+      await addFood(formData);
+      Swal.fire({
+        icon: 'success',
+        title: 'Food created successfully!',
+        showConfirmButton: false,
+        timer: 2000
+      });
+      router.push('/food');
     } catch (error) {
       console.error('Failed to create food:', error);
-      toast.error('Failed to create food. Please try again.', { autoClose: 2000 }); // Show error toast
+      Swal.fire({
+        icon: 'error',
+        title: 'Failed to create food. Please try again.',
+        showConfirmButton: false,
+        timer: 2000
+      });
     }
   };
 
