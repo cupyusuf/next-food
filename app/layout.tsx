@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Image from 'next/image';
+import Link from 'next/link';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faShoppingCart } from '@fortawesome/free-solid-svg-icons';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,7 +31,30 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <nav className="bg-gray-800 p-4">
+          <div className="container mx-auto flex justify-between items-center">
+            <div className="flex items-center">
+              <Image
+                src="/vercel.svg"
+                width={36}
+                height={36}
+                alt="Food Order Logo"
+              />
+              <span className="text-white text-xl font-semibold ml-2">Food Order App</span>
+            </div>
+            <div className="space-x-4 flex items-center">
+              <Link href="/" className="text-white hover:text-gray-300">Home</Link>
+              <Link href="/dashboard" className="text-white hover:text-gray-300">Dashboard</Link>
+              <Link href="/login" className="text-white hover:text-gray-300">Login</Link>
+              <Link href="/register" className="text-white hover:text-gray-300">Register</Link>
+              <Link href="/cart" className="text-white hover:text-gray-300">
+                <FontAwesomeIcon icon={faShoppingCart} />
+              </Link>
+            </div>
+          </div>
+        </nav>
+        <main className="p-4">{children}</main>
+        {/* Footer removed */}
       </body>
     </html>
   );
