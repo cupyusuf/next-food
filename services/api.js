@@ -74,3 +74,13 @@ export const initiatePayment = async (id) => {
   const response = await api.post(`/api/orders/${id}/pay`);
   return response.data;
 };
+
+export const getOrders = async () => {
+  const response = await api.get('/api/orders');
+  return response.data;
+};
+
+export const payOrder = async (orderId) => {
+  const response = await api.post(`/api/orders/${orderId}/pay`);
+  return response.data;
+};

@@ -3,13 +3,36 @@
 import React, { useEffect } from 'react';
 import Image from 'next/image';
 import { useFoodStore } from '../stores/foodStore';
+import { useCartStore } from '../stores/cartStore';
+import Swal from 'sweetalert2';
+
+declare global {
+  interface Window {
+    snap: unknown;
+  }
+}
 
 const HomePage: React.FC = () => {
   const { foods, fetchFoods } = useFoodStore();
-
+  const { addToCart } = useCartStore();
   useEffect(() => {
     fetchFoods();
   }, [fetchFoods]);
+
+  const handleAddToCart = (food: { id: number; name: string; price: number; image_url?: string }) => {
+    addToCart({
+      food_id: food.id,
+      name: food.name,
+      price: food.price,
+      image_url: food.image_url,
+    });
+    Swal.fire({
+      icon: 'success',
+      title: 'Added to cart!',
+      showConfirmButton: false,
+      timer: 1200
+    });
+  };
 
   return (
     <main>
@@ -26,7 +49,10 @@ const HomePage: React.FC = () => {
             <h2 className="text-lg font-semibold mb-2">{food.name}</h2>
             <p className="text-gray-600 mb-2 truncate">{food.description}</p>
             <p className="text-md font-bold mb-4">Rp {food.price}</p>
-            <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 w-full">
+            <button
+              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 w-full"
+              onClick={() => handleAddToCart(food)}
+            >
               Add to Cart
             </button>
           </div>
