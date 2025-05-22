@@ -4,6 +4,14 @@ const api = axios.create({
   baseURL: 'http://food-order-api.test',
 });
 
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('access_token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
 // Foods API
 export const getFoods = async () => {
   const response = await api.get('/api/foods');
@@ -31,7 +39,22 @@ export const deleteFood = async (id) => {
 
 // Auth API
 export const registerUser = async (user) => {
-  const response = await api.post('/api/auth/register', user);
+  const response = await api.post('/api/register', user);
+  return response.data;
+};
+
+export const loginUser = async (credentials) => {
+  const response = await api.post('/api/login', credentials);
+  return response.data;
+};
+
+export const getUserInfo = async () => {
+  const response = await api.get('/api/user');
+  return response.data;
+};
+
+export const updateUserProfile = async (userData) => {
+  const response = await api.put('/api/user/update', userData);
   return response.data;
 };
 
