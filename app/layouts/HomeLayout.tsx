@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import "../globals.css";
 import Image from 'next/image';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShoppingCart } from '@fortawesome/free-solid-svg-icons';
 
 const HomeLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -28,19 +29,42 @@ const HomeLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             <span className="text-white text-xl font-semibold ml-2">Food Order App</span>
           </div>
           <div className="space-x-4 flex items-center">
-            <Link href="/" className="text-white hover:text-gray-300">Home</Link>
+            <button
+              onClick={() => router.push('/')}
+              className="text-white hover:text-gray-300"
+            >
+              Home
+            </button>
             {isLoggedIn && (
-              <Link href="/dashboard" className="text-white hover:text-gray-300">Dashboard</Link>
+              <button
+                onClick={() => router.push('/dashboard')}
+                className="text-white hover:text-gray-300"
+              >
+                Dashboard
+              </button>
             )}
             {!isLoggedIn && (
               <>
-                <Link href="/login" className="text-white hover:text-gray-300">Login</Link>
-                <Link href="/register" className="text-white hover:text-gray-300">Register</Link>
+                <button
+                  onClick={() => router.push('/login')}
+                  className="text-white hover:text-gray-300"
+                >
+                  Login
+                </button>
+                <button
+                  onClick={() => router.push('/register')}
+                  className="text-white hover:text-gray-300"
+                >
+                  Register
+                </button>
               </>
             )}
-            <Link href="/cart" className="text-white hover:text-gray-300">
+            <button
+              onClick={() => router.push('/cart')}
+              className="text-white hover:text-gray-300"
+            >
               <FontAwesomeIcon icon={faShoppingCart} />
-            </Link>
+            </button>
           </div>
         </div>
       </nav>

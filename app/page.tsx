@@ -17,7 +17,7 @@ const HomePage: React.FC = () => {
         {foods.map((food) => (
           <div key={food.id} className="border rounded-lg shadow-md p-4 max-w-xs">
             <Image
-              src={food.image || '/vercel.svg'}
+              src={food.image_url || '/vercel.svg'}
               alt={food.name}
               width={200}
               height={150}
@@ -25,7 +25,7 @@ const HomePage: React.FC = () => {
             />
             <h2 className="text-lg font-semibold mb-2">{food.name}</h2>
             <p className="text-gray-600 mb-2 truncate">{food.description}</p>
-            <p className="text-md font-bold mb-4">${food.price}</p>
+            <p className="text-md font-bold mb-4">Rp {food.price}</p>
             <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 w-full">
               Add to Cart
             </button>
